@@ -25,13 +25,13 @@ class YTDownload:
 
     def downloadAudio(self, url):
         yt = YouTube(url)
-        print("[+] Downloading Audio Content")
+        print("[+] Downloading Audio Content:", yt.title)
         ys = yt.streams.filter(only_audio=True).first()
         ys.download()
 
     def downloadVideo(self, url):
         yt = YouTube(url)
-        print("[+] Downloading Video Content")
+        print("[+] Downloading Video Content:", yt.title)
         ys = yt.streams.get_highest_resolution()
         ys.download()
 
