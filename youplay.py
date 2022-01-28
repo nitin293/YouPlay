@@ -15,7 +15,7 @@ def banner():
 ░░░╚═╝░░░░╚════╝░░╚═════╝░╚═╝░░░░░╚══════╝╚═╝░░╚═╝░░░╚═╝░░░
 
 Author: Nitin Choudhury
-Version: 0.0.1
+Version: 0.0.4
 
 '''
     print(ban)
@@ -38,9 +38,9 @@ class YTDownload:
     def extract_url_from_playlist(self, url):
         content = requests.get(url)
         text = content.content.decode()
-        urls = set(re.findall(r'(?:{"url":")(/watch\?v=[a-zA-Z0-9_+-=/\\]+index=[0-9]+)', text))
+        urls = set(re.findall(r'(?:{"url":")(/watch\?v=[a-zA-Z0-9_+-=/\\&%]+index=[0-9]+)', text))
 
-        return list(urls)
+        return urls
 
     def extract_url_from_file(self, file):
         f = open(file, 'r')
@@ -93,10 +93,12 @@ class Launch:
 
             if self.AUDIO:
                 for url in urls:
+                    url = "https://youtube.com" + url
                     downloader.downloadAudio(url)
 
             if self.VIDEO:
                 for url in urls:
+                    url = "https://youtube.com" + url
                     downloader.downloadVideo(url)
 
 
@@ -158,7 +160,7 @@ if __name__ == '__main__':
         elif args.playlist:
             URL = None
             PURL = args.playlist
-            File = None
+            FILE = None
 
         else:
             URL = None
@@ -166,11 +168,12 @@ if __name__ == '__main__':
             FILE = args.file
 
         print("Fetching Data...")
-        launcher = Launch(URL, PURL, AUDIO, VIDEO)
+        launcher = Launch(URL=URL, PURL=PURL, FILE=FILE, AUDIO=AUDIO, VIDEO=VIDEO)
 
         try:
             launcher.launchandwait()
             print("[+] Download Successful!")
+
         except:
             print("[-] Download Failed!")
 
