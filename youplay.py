@@ -174,6 +174,15 @@ if __name__ == '__main__':
             launcher.launchandwait()
             print("[+] Download Successful!")
 
+        except KeyboardInterrupt:
+            print("[!] KeyboardInterrupt Detected!")
+
+        except requests.exceptions.MissingSchema:
+            print("[!] Specify http:// or https:// before URL!")
+
+        except requests.exceptions.ConnectionError:
+            print("[!] Connection Error!")
+
         except:
             print("[-] Download Failed!")
 
