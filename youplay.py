@@ -42,12 +42,21 @@ class YTDownload:
 
         return list(urls)
 
+    def extract_url_from_file(self, file):
+        f = open(file, 'r')
+        text = f.read()
+        f.close()
+        urls = re.split(r'\n+', text)
+
+        return urls
+
 
 class Launch:
 
     def __init__(self,
                  URL=None,
                  PURL=None,
+                 FILE=None,
                  AUDIO=False,
                  VIDEO=True
                  ):
@@ -55,6 +64,7 @@ class Launch:
         self.PURL = PURL
         self.AUDIO = AUDIO
         self.VIDEO = VIDEO
+        self.FILE = FILE
 
     def launchandwait(self):
         downloader = YTDownload()
@@ -64,6 +74,19 @@ class Launch:
 
         if self.URL and self.VIDEO:
             downloader.downloadVideo(self.URL)
+
+        if self.FILE:
+            urls = downloader.extract_url_from_file(self.FILE)
+
+            if self.AUDIO:
+                for url in urls:
+                    if url:
+                        downloader.downloadAudio(url)
+
+            if self.VIDEO:
+                for url in urls:
+                    if url:
+                        downloader.downloadVideo(url)
 
         if self.PURL:
             urls = downloader.extract_url_from_playlist(self.PURL)
@@ -84,14 +107,21 @@ if __name__ == '__main__':
     parser.add_argument(
         "-u", "--url",
         type=str,
-        help="Youtube Video Link",
+        help="Youtube Video URL",
         default=None
     )
 
     parser.add_argument(
         "-p", "--playlist",
         type=str,
-        help="Youtube Playlist Link",
+        help="Youtube Playlist URL",
+        default=None
+    )
+
+    parser.add_argument(
+        "-f", "--file",
+        type=str,
+        help="File containing URLs",
         default=None
     )
 
@@ -111,7 +141,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    if args.audio or args.video:
+    if args.audio or args.video or args.file:
         AUDIO = args.audio
         VIDEO = args.video
 
@@ -119,19 +149,32 @@ if __name__ == '__main__':
         AUDIO = False
         VIDEO = True
 
-    if args.url or args.playlist:
+    if args.url or args.playlist or args.file:
         if args.url:
             URL = args.url
             PURL = None
-        else:
+            FILE = None
+
+        elif args.playlist:
             URL = None
             PURL = args.playlist
+            File = None
+
+        else:
+            URL = None
+            PURL = None
+            FILE = args.file
 
         print("Fetching Data...")
         launcher = Launch(URL, PURL, AUDIO, VIDEO)
-        launcher.launchandwait()
+
+        try:
+            launcher.launchandwait()
+            print("[+] Download Successful!")
+        except:
+            print("[-] Download Failed!")
 
     else:
         filename = sys.argv[0]
-        print(f"NO URL SPECIFIED\n\nHELP: python3 {filename} --help")
+        print(f"NO URL SPECIFIED\n\nHELP: {filename} --help")
         exit()
