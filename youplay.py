@@ -23,17 +23,17 @@ Version: 0.0.4
 
 class YTDownload:
 
-    def downloadAudio(self, url):
+    def downloadAudio(self, url, outfile):
         yt = YouTube(url)
         print("[+] Downloading Audio Content:", yt.title)
         ys = yt.streams.filter(only_audio=True).first()
-        ys.download()
+        ys.download(outfile)
 
-    def downloadVideo(self, url):
+    def downloadVideo(self, url, outfile):
         yt = YouTube(url)
         print("[+] Downloading Video Content:", yt.title)
         ys = yt.streams.get_highest_resolution()
-        ys.download()
+        ys.download(outfile)
 
     def extract_url_from_playlist(self, url):
         content = requests.get(url)
@@ -58,22 +58,24 @@ class Launch:
                  PURL=None,
                  FILE=None,
                  AUDIO=False,
-                 VIDEO=True
+                 VIDEO=True,
+                 OUTFILE=None
                  ):
         self.URL = URL
         self.PURL = PURL
         self.AUDIO = AUDIO
         self.VIDEO = VIDEO
         self.FILE = FILE
+        self.OUTFILE = OUTFILE
 
     def launchandwait(self):
         downloader = YTDownload()
 
         if self.URL and self.AUDIO:
-            downloader.downloadAudio(self.URL)
+            downloader.downloadAudio(self.URL, self.OUTFILE)
 
         if self.URL and self.VIDEO:
-            downloader.downloadVideo(self.URL)
+            downloader.downloadVideo(self.URL, self.OUTFILE)
 
         if self.FILE:
             urls = downloader.extract_url_from_file(self.FILE)
@@ -81,12 +83,12 @@ class Launch:
             if self.AUDIO:
                 for url in urls:
                     if url:
-                        downloader.downloadAudio(url)
+                        downloader.downloadAudio(url, self.OUTFILE)
 
             if self.VIDEO:
                 for url in urls:
                     if url:
-                        downloader.downloadVideo(url)
+                        downloader.downloadVideo(url, self.OUTFILE)
 
         if self.PURL:
             urls = downloader.extract_url_from_playlist(self.PURL)
@@ -94,12 +96,13 @@ class Launch:
             if self.AUDIO:
                 for url in urls:
                     url = "https://youtube.com" + url
-                    downloader.downloadAudio(url)
+                    downloader.downloadAudio(url, self.OUTFILE)
 
             if self.VIDEO:
                 for url in urls:
                     url = "https://youtube.com" + url
-                    downloader.downloadVideo(url)
+                    downloader.downloadVideo(url, self.OUTFILE)
+
 
 
 if __name__ == '__main__':
@@ -131,6 +134,7 @@ if __name__ == '__main__':
         "-a", "--audio",
         type=bool,
         help="Download Audio Only",
+        choices=[True, False],
         default=False
     )
 
@@ -138,6 +142,14 @@ if __name__ == '__main__':
         "-v", "--video",
         type=bool,
         help="Download Video [higher resolution Only]",
+        choices=[True, False],
+        default=False
+    )
+
+    parser.add_argument(
+        "-o", "--output",
+        type=str,
+        help="Output Directory [DEFAULT: ./]",
         default=False
     )
 
@@ -150,6 +162,12 @@ if __name__ == '__main__':
     else:
         AUDIO = False
         VIDEO = True
+
+    if args.output:
+        OUTFILE = args.output
+
+    else:
+        OUTFILE = None
 
     if args.url or args.playlist or args.file:
         if args.url:
@@ -168,7 +186,7 @@ if __name__ == '__main__':
             FILE = args.file
 
         print("Fetching Data...")
-        launcher = Launch(URL=URL, PURL=PURL, FILE=FILE, AUDIO=AUDIO, VIDEO=VIDEO)
+        launcher = Launch(URL=URL, PURL=PURL, FILE=FILE, AUDIO=AUDIO, VIDEO=VIDEO, OUTFILE=OUTFILE)
 
         try:
             launcher.launchandwait()
