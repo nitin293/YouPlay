@@ -197,7 +197,7 @@ if __name__ == '__main__':
         launcher = Launch(URL=URL, PURL=PURL, FILE=FILE, AUDIO=AUDIO, VIDEO=VIDEO, OUTFILE=OUTFILE)
 
         try:
-            launcher.verbose()
+            # launcher.verbose()
             launcher.launchandwait()
             print("[+] Download Successful!")
 
