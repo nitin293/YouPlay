@@ -103,14 +103,14 @@ class Launch:
                     url = "https://youtube.com" + url
                     downloader.downloadVideo(url, self.OUTFILE)
 
-    def verbose(self):
-        print(f"URL: {self.URL}\n"
-              f"PURL: {self.PURL}\n"
-              f"FILE: {self.FILE}\n"
-              f"AUDIO: {self.AUDIO}\n"
-              f"VIDEO: {self.VIDEO}\n"
-              f"OUTFILE: {self.OUTFILE}\n"
-              )
+    # def verbose(self):
+    #     print(f"URL: {self.URL}\n"
+    #           f"PURL: {self.PURL}\n"
+    #           f"FILE: {self.FILE}\n"
+    #           f"AUDIO: {self.AUDIO}\n"
+    #           f"VIDEO: {self.VIDEO}\n"
+    #           f"OUTFILE: {self.OUTFILE}\n"
+    #           )
 
 
 if __name__ == '__main__':
