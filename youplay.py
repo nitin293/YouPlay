@@ -103,6 +103,14 @@ class Launch:
                     url = "https://youtube.com" + url
                     downloader.downloadVideo(url, self.OUTFILE)
 
+    def verbose(self):
+        print(f"URL: {self.URL}\n"
+              f"PURL: {self.PURL}\n"
+              f"FILE: {self.FILE}\n"
+              f"AUDIO: {self.AUDIO}\n"
+              f"VIDEO: {self.VIDEO}\n"
+              f"OUTFILE: {self.OUTFILE}\n"
+              )
 
 
 if __name__ == '__main__':
@@ -134,7 +142,7 @@ if __name__ == '__main__':
         "-a", "--audio",
         type=bool,
         help="Download Audio Only",
-        choices=[True, False],
+        # choices=[True, False],
         default=False
     )
 
@@ -142,7 +150,7 @@ if __name__ == '__main__':
         "-v", "--video",
         type=bool,
         help="Download Video [higher resolution Only]",
-        choices=[True, False],
+        # choices=[True, False],
         default=False
     )
 
@@ -189,6 +197,7 @@ if __name__ == '__main__':
         launcher = Launch(URL=URL, PURL=PURL, FILE=FILE, AUDIO=AUDIO, VIDEO=VIDEO, OUTFILE=OUTFILE)
 
         try:
+            launcher.verbose()
             launcher.launchandwait()
             print("[+] Download Successful!")
 
@@ -202,7 +211,8 @@ if __name__ == '__main__':
             print("[!] Connection Error!")
 
         except:
-            print("[-] Download Failed!")
+            raise
+            # print("[-] Download Failed!")
 
     else:
         filename = sys.argv[0]
