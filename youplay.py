@@ -1,8 +1,8 @@
 '''
 
-    Version: 0.1.7
+    Version: 0.1.8
 
-    Issue Resolved regarding download audio/video from URL file
+    MP4 to MP3 Converter Added
 
 '''
 
@@ -25,7 +25,7 @@ def banner():
 ░░░╚═╝░░░░╚════╝░░╚═════╝░╚═╝░░░░░╚══════╝╚═╝░░╚═╝░░░╚═╝░░░
 
 Author: Nitin Choudhury
-Version: 0.1.7
+Version: 0.1.8
 
 '''
     print(ban)
