@@ -11,10 +11,12 @@ import requests
 import re
 import argparse
 import sys
+from moviepy.editor import *
 
 
 def banner():
     ban = '''
+    
 ██╗░░░██╗░█████╗░██╗░░░██╗██████╗░██╗░░░░░░█████╗░██╗░░░██╗
 ╚██╗░██╔╝██╔══██╗██║░░░██║██╔══██╗██║░░░░░██╔══██╗╚██╗░██╔╝
 ░╚████╔╝░██║░░██║██║░░░██║██████╔╝██║░░░░░███████║░╚████╔╝░
@@ -37,11 +39,22 @@ class YTDownload:
         ys = yt.streams.filter(only_audio=True).first()
         ys.download(outfile)
 
+        file = outfile + "/" + '.'.join(yt.streams.first().default_filename.split('.')[:-1])
+        self.convert(file)
+        os.remove(file + ".mp4")
+
     def downloadVideo(self, url, outfile):
         yt = YouTube(url)
         print("[+] Downloading Video Content:", yt.title)
         ys = yt.streams.get_highest_resolution()
         ys.download(outfile)
+
+    def convert(self, filename):
+        try:
+            audio = AudioFileClip(filename + ".mp4")
+            audio.write_audiofile(filename + ".mp3")
+        except:
+            raise
 
     def extract_url_from_playlist(self, url):
         content = requests.get(url)
@@ -111,13 +124,17 @@ class Launch:
                     url = "https://youtube.com" + url
                     downloader.downloadVideo(url, self.OUTFILE)
 
-    def verbose(self):
+    def input_verbose(self):
         print(f"URL: {self.URL}\n"
               f"PURL: {self.PURL}\n"
               f"FILE: {self.FILE}\n"
               f"AUDIO: {self.AUDIO}\n"
               f"VIDEO: {self.VIDEO}\n"
               f"OUTFILE: {self.OUTFILE}\n"
+              )
+
+    def output_verbose(self):
+        print(f"TITLE: {self.OUTFILE}\n"
               )
 
 
