@@ -1,3 +1,11 @@
+'''
+
+    Version: 0.1.7
+
+    Issue Resolved regarding download audio/video from URL file
+
+'''
+
 from pytube import YouTube
 import requests
 import re
@@ -15,7 +23,7 @@ def banner():
 ░░░╚═╝░░░░╚════╝░░╚═════╝░╚═╝░░░░░╚══════╝╚═╝░░╚═╝░░░╚═╝░░░
 
 Author: Nitin Choudhury
-Version: 0.1.5
+Version: 0.1.7
 
 '''
     print(ban)
@@ -103,14 +111,14 @@ class Launch:
                     url = "https://youtube.com" + url
                     downloader.downloadVideo(url, self.OUTFILE)
 
-    # def verbose(self):
-    #     print(f"URL: {self.URL}\n"
-    #           f"PURL: {self.PURL}\n"
-    #           f"FILE: {self.FILE}\n"
-    #           f"AUDIO: {self.AUDIO}\n"
-    #           f"VIDEO: {self.VIDEO}\n"
-    #           f"OUTFILE: {self.OUTFILE}\n"
-    #           )
+    def verbose(self):
+        print(f"URL: {self.URL}\n"
+              f"PURL: {self.PURL}\n"
+              f"FILE: {self.FILE}\n"
+              f"AUDIO: {self.AUDIO}\n"
+              f"VIDEO: {self.VIDEO}\n"
+              f"OUTFILE: {self.OUTFILE}\n"
+              )
 
 
 if __name__ == '__main__':
@@ -150,7 +158,7 @@ if __name__ == '__main__':
         "-v", "--video",
         type=bool,
         help="Download Video [higher resolution Only]",
-        # choices=[True, False],
+        choices=[True, False],
         default=False
     )
 
@@ -158,12 +166,12 @@ if __name__ == '__main__':
         "-o", "--output",
         type=str,
         help="Output Directory [DEFAULT: ./]",
-        default=False
+        default='./'
     )
 
     args = parser.parse_args()
 
-    if args.audio or args.video or args.file:
+    if args.audio or args.video:
         AUDIO = args.audio
         VIDEO = args.video
 
@@ -194,6 +202,8 @@ if __name__ == '__main__':
             FILE = args.file
 
         print("Fetching Data...")
+        print(FILE)
+        print(OUTFILE)
         launcher = Launch(URL=URL, PURL=PURL, FILE=FILE, AUDIO=AUDIO, VIDEO=VIDEO, OUTFILE=OUTFILE)
 
         try:
