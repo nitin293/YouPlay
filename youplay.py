@@ -202,8 +202,6 @@ if __name__ == '__main__':
             FILE = args.file
 
         print("Fetching Data...")
-        print(FILE)
-        print(OUTFILE)
         launcher = Launch(URL=URL, PURL=PURL, FILE=FILE, AUDIO=AUDIO, VIDEO=VIDEO, OUTFILE=OUTFILE)
 
         try:
