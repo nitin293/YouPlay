@@ -219,8 +219,8 @@ if __name__ == '__main__':
             print("[!] Connection Error!")
 
         except:
-            raise
-            # print("[-] Download Failed!")
+            # raise
+            print("[-] Download Failed!")
 
     else:
         filename = sys.argv[0]
