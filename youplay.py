@@ -1,6 +1,6 @@
 '''
 
-    Version: 0.1.8
+    Version: 0.2.0
 
     MP4 to MP3 Converter Added
 
@@ -10,7 +10,6 @@ from pytube import YouTube
 import requests
 import re
 import argparse
-import sys
 from moviepy.editor import *
 
 
@@ -25,7 +24,7 @@ def banner():
 ░░░╚═╝░░░░╚════╝░░╚═════╝░╚═╝░░░░░╚══════╝╚═╝░░╚═╝░░░╚═╝░░░
 
 Author: Nitin Choudhury
-Version: 0.1.8
+Version: 0.2.0
 
 '''
     print(ban)
@@ -43,16 +42,29 @@ class YTDownload:
         self.convert(file)
         os.remove(file + ".mp4")
 
+        return f"{file}.mp3"
+
     def downloadVideo(self, url, outfile, res):
         yt = YouTube(url)
         print("[+] Downloading Video Content:", yt.title)
 
         if res:
             ys = yt.streams.filter(res=res).first()
+            audioPresent = re.findall('(?:progressive=")([A-Za-z]+)(?:")', str(ys))[0]
+
+            if audioPresent=='False':
+                print(f"Audio not available for {res}. Trying to get audio...")
+
+                audfile = self.downloadAudio(url=url, outfile=outfile)
+                ys.download(outfile)
+                vidfile = f"{outfile}/{ys.default_filename}"
+
+                self.merger(audio=audfile, video=vidfile)
+
         else:
             ys = yt.streams.get_highest_resolution()
+            ys.download(outfile)
 
-        ys.download(outfile)
 
     def convert(self, filename):
         try:
@@ -75,6 +87,24 @@ class YTDownload:
         urls = re.split(r'\n+', text)
 
         return urls
+
+    def merger(self, audio, video):
+
+        if "__temp__.mp4" in os.listdir():
+            os.remove("__temp__.mp4")
+
+        try:
+            vid = VideoFileClip(video)
+            aud = AudioFileClip(audio)
+
+            final = vid.set_audio(audioclip=aud)
+            final.ipython_display()
+
+        except ValueError:
+            os.remove(audio)
+            os.remove(video)
+
+            os.rename("__temp__.mp4", video)
 
 
 class Launch:
@@ -174,14 +204,13 @@ if __name__ == '__main__':
         "-a", "--audio",
         type=bool,
         help="Download Audio Only",
-        # choices=[True, False],
         default=False
     )
 
     parser.add_argument(
         "-v", "--video",
         type=bool,
-        help="Download Video [higher resolution Only]",
+        help="Download Video",
         choices=[True, False],
         default=False
     )
@@ -254,8 +283,8 @@ if __name__ == '__main__':
             print("[!] Connection Error!")
 
         except:
-            # raise
-            print("[-] Download Failed!")
+            raise
+            # print("[-] Download Failed!")
 
     else:
         filename = sys.argv[0]
