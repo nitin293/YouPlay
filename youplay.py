@@ -43,10 +43,15 @@ class YTDownload:
         self.convert(file)
         os.remove(file + ".mp4")
 
-    def downloadVideo(self, url, outfile):
+    def downloadVideo(self, url, outfile, res):
         yt = YouTube(url)
         print("[+] Downloading Video Content:", yt.title)
-        ys = yt.streams.get_highest_resolution()
+
+        if res:
+            ys = yt.streams.filter(res=res).first()
+        else:
+            ys = yt.streams.get_highest_resolution()
+
         ys.download(outfile)
 
     def convert(self, filename):
@@ -80,7 +85,8 @@ class Launch:
                  FILE=None,
                  AUDIO=False,
                  VIDEO=True,
-                 OUTFILE=None
+                 OUTFILE=None,
+                 RES=None
                  ):
         self.URL = URL
         self.PURL = PURL
@@ -88,6 +94,7 @@ class Launch:
         self.VIDEO = VIDEO
         self.FILE = FILE
         self.OUTFILE = OUTFILE
+        self.RES = RES
 
     def launchandwait(self):
         downloader = YTDownload()
@@ -96,7 +103,7 @@ class Launch:
             downloader.downloadAudio(self.URL, self.OUTFILE)
 
         if self.URL and self.VIDEO:
-            downloader.downloadVideo(self.URL, self.OUTFILE)
+            downloader.downloadVideo(self.URL, self.OUTFILE, self.RES)
 
         if self.FILE:
             urls = downloader.extract_url_from_file(self.FILE)
@@ -109,7 +116,7 @@ class Launch:
             if self.VIDEO:
                 for url in urls:
                     if url:
-                        downloader.downloadVideo(url, self.OUTFILE)
+                        downloader.downloadVideo(url, self.OUTFILE, self.RES)
 
         if self.PURL:
             urls = downloader.extract_url_from_playlist(self.PURL)
@@ -122,7 +129,7 @@ class Launch:
             if self.VIDEO:
                 for url in urls:
                     url = "https://youtube.com" + url
-                    downloader.downloadVideo(url, self.OUTFILE)
+                    downloader.downloadVideo(url, self.OUTFILE, self.RES)
 
     def input_verbose(self):
         print(f"URL: {self.URL}\n"
@@ -186,7 +193,17 @@ if __name__ == '__main__':
         default='./'
     )
 
+    parser.add_argument(
+        "-r", "--resolution",
+        type=str,
+        help="Set Resolution",
+        default=None
+    )
+
     args = parser.parse_args()
+
+    if args.resolution:
+        RES = args.resolution
 
     if args.audio or args.video:
         AUDIO = args.audio
@@ -219,7 +236,8 @@ if __name__ == '__main__':
             FILE = args.file
 
         print("Fetching Data...")
-        launcher = Launch(URL=URL, PURL=PURL, FILE=FILE, AUDIO=AUDIO, VIDEO=VIDEO, OUTFILE=OUTFILE)
+
+        launcher = Launch(URL=URL, PURL=PURL, FILE=FILE, AUDIO=AUDIO, VIDEO=VIDEO, OUTFILE=OUTFILE, RES=RES)
 
         try:
             # launcher.verbose()
