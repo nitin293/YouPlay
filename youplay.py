@@ -1,6 +1,6 @@
 '''
 
-    Version: 0.2.0
+    Version: 0.2.1
 
     MP4 to MP3 Converter Added
 
@@ -24,7 +24,7 @@ def banner():
 ░░░╚═╝░░░░╚════╝░░╚═════╝░╚═╝░░░░░╚══════╝╚═╝░░╚═╝░░░╚═╝░░░
 
 Author: Nitin Choudhury
-Version: 0.2.0
+Version: 0.2.1
 
 '''
     print(ban)
@@ -233,6 +233,9 @@ if __name__ == '__main__':
 
     if args.resolution:
         RES = args.resolution
+
+    else:
+        RES = None
 
     if args.audio or args.video:
         AUDIO = args.audio
