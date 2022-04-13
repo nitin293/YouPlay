@@ -61,6 +61,9 @@ class YTDownload:
 
                 self.merger(audio=audfile, video=vidfile)
 
+            else:
+                ys.download(outfile)
+
         else:
             ys = yt.streams.get_highest_resolution()
             ys.download(outfile)
