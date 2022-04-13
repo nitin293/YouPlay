@@ -1,6 +1,6 @@
 '''
 
-    Version: 0.2.1
+    Version: 0.2.2
 
     MP4 to MP3 Converter Added
 
@@ -24,7 +24,7 @@ def banner():
 ░░░╚═╝░░░░╚════╝░░╚═════╝░╚═╝░░░░░╚══════╝╚═╝░░╚═╝░░░╚═╝░░░
 
 Author: Nitin Choudhury
-Version: 0.2.1
+Version: 0.2.2
 
 '''
     print(ban)
