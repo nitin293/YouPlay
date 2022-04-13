@@ -231,11 +231,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    if args.resolution:
-        RES = args.resolution
-
-    else:
-        RES = None
+    RES = args.resolution
 
     if args.audio or args.video:
         AUDIO = args.audio
